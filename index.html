@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulador de Orçamento | EcoFibra</title>
+  <title>Simulador de Orçamento | ÉCoCo</title>
   <style>
     * {
       box-sizing: border-box;
@@ -39,7 +39,7 @@
       color: #2e7d32;
     }
 
-    select, input[type="number"] {
+    select {
       width: 100%;
       padding: 12px;
       margin-top: 8px;
@@ -84,23 +84,17 @@
 </head>
 <body>
   <div class="container">
-    <h1>Simulador de Orçamento - EcoFibra</h1>
+    <h1>Simulador de Orçamento - ÉCoCo</h1>
+    <p style="text-align: center; font-weight: bold; color: #c62828;">Vendemos apenas para CNPJs com pedido mínimo de 50 telhas.</p>
 
     <label for="tipoTelha">Tipo de Telha:</label>
     <select id="tipoTelha">
-      <option value="22.15">0,50x2,44 (4mm) - R$22,15</option>
-      <option value="135.28">1,10x2,44 (6mm) - R$135,28</option>
-    </select>
-
-    <label for="escala">Escala de Compra:</label>
-    <select id="escala">
-      <option value="1">Pequena escala (1 a 99) - Preço normal</option>
-      <option value="2">Média escala (100 a 499) - 10% de desconto</option>
-      <option value="3">Larga escala (500 ou mais) - 20% de desconto</option>
+      <option value="19.53">0,50x2,44 (4mm) - R$19,53</option>
+      <option value="119.72">1,10x2,44 (6mm) - R$119,72</option>
     </select>
 
     <label for="quantidade">Quantidade de Telhas:</label>
-    <input type="number" id="quantidade" placeholder="Digite a quantidade..." min="1" />
+    <select id="quantidade"></select>
 
     <button class="button" onclick="calcularOrcamento()">Calcular Valor</button>
 
@@ -108,6 +102,16 @@
   </div>
 
   <script>
+    window.onload = function () {
+      const selectQuantidade = document.getElementById("quantidade");
+      for (let i = 50; i <= 1500; i += 50) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = `${i} telhas`;
+        selectQuantidade.appendChild(option);
+      }
+    };
+
     function formatarValor(valor) {
       return valor.toLocaleString('pt-BR', {
         style: 'currency',
@@ -117,35 +121,9 @@
 
     function calcularOrcamento() {
       const precoTelha = parseFloat(document.getElementById("tipoTelha").value);
-      const escala = parseInt(document.getElementById("escala").value);
       const quantidade = parseInt(document.getElementById("quantidade").value);
-      let valorFinal = 0;
 
-      if (isNaN(quantidade) || quantidade < 1) {
-        document.getElementById("resultado").innerText = "Por favor, insira uma quantidade válida.";
-        return;
-      }
-
-      if (escala === 1 && (quantidade < 1 || quantidade > 99)) {
-        document.getElementById("resultado").innerText = "Quantidade inválida para pequena escala.";
-        return;
-      } else if (escala === 2 && (quantidade < 100 || quantidade > 499)) {
-        document.getElementById("resultado").innerText = "Quantidade inválida para média escala.";
-        return;
-      } else if (escala === 3 && quantidade < 500) {
-        document.getElementById("resultado").innerText = "Quantidade inválida para larga escala.";
-        return;
-      }
-
-      let precoFinal = precoTelha;
-
-      if (escala === 2) {
-        precoFinal *= 0.9; // 10% desconto
-      } else if (escala === 3) {
-        precoFinal *= 0.8; // 20% desconto
-      }
-
-      valorFinal = precoFinal * quantidade;
+      const valorFinal = precoTelha * quantidade;
 
       document.getElementById("resultado").innerText = `Valor final: ${formatarValor(valorFinal)}`;
     }
